@@ -9,13 +9,23 @@ var canvas;
 var canvasWidth;
 var canvasHeight;
 
+var keyStates = {
+    'up': false,
+    'down': false,
+    'right': false,
+    'left': false
+};
+
+
 function Player(name, x, y) {
     this.name = name;
     this.x = x;
     this.y = y;
     this.width = 10;
     this.height = 10;
-    this.speed = 3;
+    this.movementSpeed = 3;
+    this.velocityX = 0;
+    this.velocityY = 0;
 }
 
 
@@ -23,10 +33,33 @@ function Player(name, x, y) {
 //context.fillStyle = "rgb(255, 0, 0)";
 //context.fillText("They played us like a JSFiddle", 50, 50);
 //console.log("ayy lmao");
-
 var main = function() {
-  render();
+    render();
+    update();
 }
+
+var update = function() {
+    if(keyStates.up && !(keyStates.down)){
+        velocityY = -clientPlayer.movementSpeed;
+    } else if (keyStates.down && !(keyStates.up)) {
+        velocityY = clientPlayer.movementSpeed;
+    } else {
+        velocityY = 0;
+    }
+
+    if(keyStates.left && !(keyStates.right)) {
+        velocityX = -clientPlayer.movementSpeed;
+    } else if (keyStates.right && !(keyStates.left)) {
+        velocityX = clientPlayer.movementSpeed;
+    } else {
+        velocityX = 0;
+    }
+
+    clientPlayer.x += velocityX;
+    clientPlayer.y += velocityY;
+    checkPlayerBoundaries(clientPlayer);
+}
+
 
 var render = function() {
     context.clearRect(0,0, canvasWidth, canvasHeight);
@@ -59,21 +92,37 @@ var checkPlayerBoundaries = function(player) {
 }
 
 document.addEventListener('keydown', function(evt) {
-  switch (evt.keyCode) {
-      case UP_ARROW:
-        clientPlayer.y -= clientPlayer.speed;
-        break;
-      case DOWN_ARROW:
-        clientPlayer.y += clientPlayer.speed;
-        break;
-      case RIGHT_ARROW:
-        clientPlayer.x += clientPlayer.speed;
-        break;
-      case LEFT_ARROW:
-        clientPlayer.x -= clientPlayer.speed;
-        break;
-  }
-  checkPlayerBoundaries(clientPlayer);
+    switch (evt.keyCode) {
+        case UP_ARROW:
+            keyStates.up = true;
+            break;
+        case DOWN_ARROW:
+            keyStates.down = true;
+            break;
+        case RIGHT_ARROW:
+            keyStates.right = true;
+            break;
+        case LEFT_ARROW:
+            keyStates.left = true;
+            break;
+    }
+}, false);
+
+document.addEventListener('keyup', function(evt) {
+    switch (evt.keyCode) {
+        case UP_ARROW:
+            keyStates.up = false;
+            break;
+        case DOWN_ARROW:
+            keyStates.down = false;
+            break;
+        case RIGHT_ARROW:
+            keyStates.right = false;
+            break;
+        case LEFT_ARROW:
+            keyStates.left = false;
+            break;
+    }
 }, false);
 
 $(document).ready(function() {
