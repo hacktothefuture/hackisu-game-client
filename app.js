@@ -1,18 +1,16 @@
-var canvas = document.createElement("canvas");
-var context = canvas.getContext("2d");
-canvas.width = 400;
-canvas.height = 300;
-var w = canvas.width;
-var h = canvas.height;
-var playerWidth = 10;
-var playerHeight = 10;
-var playerSpeed = 3;
-document.body.appendChild(canvas);
-
 var UP_ARROW = 38;
 var DOWN_ARROW = 40;
 var LEFT_ARROW = 37;
 var RIGHT_ARROW = 39;
+var playerWidth = 10;
+var playerHeight = 10;
+var playerSpeed = 3;
+var playerX = 0;
+var playerY = 0;
+var context;
+var canvas;
+var canvasWidth;
+var canvasHeight;
 
 //context.fillStyle = "rgb(255, 0, 0)";
 //context.fillText("They played us like a JSFiddle", 50, 50);
@@ -23,11 +21,11 @@ var main = function() {
 }
 
 var render = function() {
-    context.clearRect(0,0,canvas.width, canvas.height);
+    context.clearRect(0,0, canvasWidth, canvasHeight);
     context.fillStyle = "white";
-    context.fillRect(0,0,w,h);
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
     context.strokeStyle = "green";
-    context.strokeRect(0, 0, w, h);
+    context.strokeRect(0, 0, canvasWidth, canvasHeight);
     drawPlayer();
     requestAnimationFrame(main);
 }
@@ -36,9 +34,6 @@ var drawPlayer = function() {
     context.fillStyle = "rgb(0, 255, 0)";
     context.fillRect(playerX, playerY, playerWidth, playerHeight);
 }
-
-var playerX = 0;
-var playerY = 0;
 
 var checkPlayerBoundaries = function(x, y, width, height) {
     if(x < 0){
@@ -68,7 +63,16 @@ document.addEventListener('keydown', function(evt) {
         playerX -= playerSpeed;
         break;
   }
-  checkPlayerBoundaries(playerX, playerY, w, h);
+  checkPlayerBoundaries(playerX, playerY, canvasWidth, canvasHeight);
 }, false);
 
-main();
+$(document).ready(function() {
+    //grab canvas from DOM
+    canvas = $("#hackisu")[0];
+    context = canvas.getContext("2d");
+    canvasWidth = canvas.width;
+    canvasHeight = canvas.height;
+
+    //run main code 
+    main();
+})
