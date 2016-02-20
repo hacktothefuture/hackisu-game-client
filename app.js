@@ -2,15 +2,23 @@ var UP_ARROW = 38;
 var DOWN_ARROW = 40;
 var LEFT_ARROW = 37;
 var RIGHT_ARROW = 39;
-var playerWidth = 10;
-var playerHeight = 10;
-var playerSpeed = 3;
-var playerX = 0;
-var playerY = 0;
+var players = []
+var clientPlayer = new Player("default", 0, 0);
 var context;
 var canvas;
 var canvasWidth;
 var canvasHeight;
+
+function Player(name, x, y) {
+    this.name = name;
+    this.x = x;
+    this.y = y;
+    this.width = 10;
+    this.height = 10;
+    this.speed = 3;
+}
+
+
 
 //context.fillStyle = "rgb(255, 0, 0)";
 //context.fillText("They played us like a JSFiddle", 50, 50);
@@ -26,44 +34,46 @@ var render = function() {
     context.fillRect(0, 0, canvasWidth, canvasHeight);
     context.strokeStyle = "green";
     context.strokeRect(0, 0, canvasWidth, canvasHeight);
-    drawPlayer();
+    drawPlayer(clientPlayer);
     requestAnimationFrame(main);
 }
 
-var drawPlayer = function() {
+var drawPlayer = function(player) {
     context.fillStyle = "rgb(0, 255, 0)";
-    context.fillRect(playerX, playerY, playerWidth, playerHeight);
+    context.fillRect(player.x, player.y, player.width, player.height);
 }
 
-var checkPlayerBoundaries = function(x, y, width, height) {
-    if(x < 0){
-        playerX = 0
-    } else if (x > (width - 1 - playerWidth)) {
-        playerX = width - 1 - playerWidth;
+var checkPlayerBoundaries = function(player) {
+    var canvasRight = canvasWidth - 1 - player.width;
+    var canvasBottum = canvasHeight - 1 - player.height;
+    if(player.x < 0){
+        player.x = 0
+    } else if (player.x > canvasRight) {
+        player.x = canvasRight;
     }
-    if(y < 0) {
-        playerY = 0
-    } else if (y > (height - 1 - playerHeight)) {
-        playerY = height - 1 - playerHeight;
+    if(player.y < 0) {
+        player.y = 0
+    } else if (player.y > canvasBottum) {
+        player.y = canvasBottum;
     }
 }
 
 document.addEventListener('keydown', function(evt) {
   switch (evt.keyCode) {
       case UP_ARROW:
-        playerY -= playerSpeed;
+        clientPlayer.y -= clientPlayer.speed;
         break;
       case DOWN_ARROW:
-        playerY += playerSpeed;
+        clientPlayer.y += clientPlayer.speed;
         break;
       case RIGHT_ARROW:
-        playerX += playerSpeed;
+        clientPlayer.x += clientPlayer.speed;
         break;
       case LEFT_ARROW:
-        playerX -= playerSpeed;
+        clientPlayer.x -= clientPlayer.speed;
         break;
   }
-  checkPlayerBoundaries(playerX, playerY, canvasWidth, canvasHeight);
+  checkPlayerBoundaries(clientPlayer);
 }, false);
 
 $(document).ready(function() {
